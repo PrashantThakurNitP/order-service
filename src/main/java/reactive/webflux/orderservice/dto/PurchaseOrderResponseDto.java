@@ -2,7 +2,7 @@ package reactive.webflux.orderservice.dto;
 
 import lombok.Data;
 import lombok.ToString;
-
+//PurchaseOrderResponseDto and PurchaseOrderRequestDto are created to get request and send response for order srevice
 @Data
 @ToString
 public class PurchaseOrderResponseDto {

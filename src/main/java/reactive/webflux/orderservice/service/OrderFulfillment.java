@@ -25,40 +25,44 @@ public class OrderFulfillment {
 	private UserClient userClient;
 	
 	public Mono<PurchaseOrderResponseDto>processOrder(Mono<PurchaseOrderRequestDto> requestDtoMono){
-		return requestDtoMono.map(RequestContext::new)
+		return requestDtoMono.map(RequestContext::new )/*this method reference  is same as  dto -> new RequestContext(dto)*/
+		//we created request context
 		//we have product id and userid we can call product service to get details
 		//once we get request context we will use flatmap
-		.flatMap(this::productRequestResponse)
-		.doOnNext(EntityDtoUtil::setTransactionRequestDto)
+		.flatMap(this::productRequestResponse)//we are getting request context with product dto information
+		
+		//build transaction request dto
+		.doOnNext(EntityDtoUtil::setTransactionRequestDto)//send request to user service to deduct amount
+		
 		.flatMap(this::userRequestResponse)
+		//so far we have built request context and made request to product service to get product information 
+		//then we have sent request to user service to deduct amount
+		//then if amount deducted then we can give the product , if amount is not enough then cannot deliver
+		//by using request context object we are going to create purchase order entity
+			
+		
 		.map(EntityDtoUtil::getPurchaseOrder)//to get purchase order entity object
 		.map(po->this.orderRepository.save(po))// saved in database and we have purchase order entity with
 		
 		// or .map(this.orderRepository::save) by method refernce
 		//this is blocking
 		//now we need purchase order response dto
-		.map(EntityDtoUtil::getPurchaseOrderResponseDto)
+		.map(EntityDtoUtil::getPurchaseOrderResponseDto) //get purchase order entity object
 		.subscribeOn(Schedulers.boundedElastic());// we use this as . save is blocking
 		//it will not effect event loop thread , ie it will not be blocked
 		
 		//send transaction request to user service to  deduct amount
 		//so we have to build transaction request dto
-		
-		
-	//	so far we have built request context and made request to product service to get product information 
-	//then we have sent request to user service to deduct amount
-		
-		//then if amount deducted then we can give the product , if amount is not enough then cannot deliver
-		//by using request context object we are going to create purchase order entity
-	
 	}
 	private Mono<RequestContext> productRequestResponse(RequestContext rc) {
+		// call product service to get product information
 		return this.productClient.getProductById(rc.getPurchaseOrderRequestDto().getProductId())
-		.doOnNext(rc::setProductDto)//when it emit product dto we will set product dto in context
-		.thenReturn(rc);
+		.doOnNext(rc::setProductDto)//when it emit product dto we will set product dto in request context
+		.thenReturn(rc);// after setting we return request context
 	}
 	
 	private Mono<RequestContext>userRequestResponse(RequestContext rc){
+		//call user service
 		 return this.userClient.authorizeTransaction(rc.getTransactionRequestDto())
 		.doOnNext(rc::setTransactionResponseDto)
 		.thenReturn(rc);

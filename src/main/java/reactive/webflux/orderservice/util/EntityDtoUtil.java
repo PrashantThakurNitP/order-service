@@ -28,11 +28,13 @@ public class EntityDtoUtil {
 	}
 	
 	public static PurchaseOrder getPurchaseOrder(RequestContext requestContext) {
+		//by request context we will create purchase order entity
 		PurchaseOrder purchaseOrder = new PurchaseOrder();
 		purchaseOrder.setUserId(requestContext.getPurchaseOrderRequestDto().getUserId());
 		purchaseOrder.setProductId(requestContext.getPurchaseOrderRequestDto().getProductId());
 		purchaseOrder.setAmount(requestContext.getProductDto().getPrice());
-		
+		//id is auto generate
+		//based on transaction response we will set status
 		TransactionStatus status = requestContext.getTransactionResponseDto().getStatus();
 		OrderStatus orderStatus = TransactionStatus.APPROVED.equals(status) ? OrderStatus.COMPLETED: OrderStatus.FAILED;
 		purchaseOrder.setStatus(orderStatus);

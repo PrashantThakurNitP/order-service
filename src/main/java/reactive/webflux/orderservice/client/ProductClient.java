@@ -11,23 +11,25 @@ import reactor.core.publisher.Mono;
 
 @Service
 public class ProductClient {
+	//this product Client is response for sending request to product service and getting response
 	
 	private final WebClient webClient;
-	
+	//via constructor we will inject property
 	public ProductClient(@Value("${product.service.url}") String url) {
+		//fetch url from application.property in url
 		this.webClient= WebClient.builder()
 		.baseUrl(url)
 		.build();
 	}
-	//via constructore we will inject property
-	//this client is rewponsible for sending request and getting response
+
+	//this client is responsible for sending request and getting response
 	public Mono<ProductDto> getProductById(final String productId) {
 		//someone give id we will send info to product service to get product information
 		return this.webClient
-		.get()
-		.uri("{id}",productId)//base url + product id
+		.get()//send get request
+		.uri("{id}",productId)//url is  base url + product id
 		.retrieve()
-		.bodyToMono(ProductDto.class);
+		.bodyToMono(ProductDto.class);// we are expecting response product dto
 		
 	}
 

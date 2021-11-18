@@ -21,7 +21,7 @@ public class OrderQueryService {
 	public Flux<PurchaseOrderResponseDto> getProductByUserId(int userId) {
 		// List<PurchaseOrder> purchaseOrders = this.orderRepository.findByUserId(userId);// it will bw executed immediately
 		//we want to do thing lazily
-	return Flux.fromStream(() -> this.orderRepository.findByUserId(userId).stream()/* we will get purchase order for usrer id*/)
+	return Flux.fromStream(() -> this.orderRepository.findByUserId(userId).stream()/* we will get flux of  purchase order for user id*/)
 		//we are building pipeline , only when it is subscribed it will be executed
 		//we are getting flux of purchase order
 		.map(EntityDtoUtil::getPurchaseOrderResponseDto)//we get purchase order response dto

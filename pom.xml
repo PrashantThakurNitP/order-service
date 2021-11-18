@@ -46,6 +46,14 @@
 			<artifactId>reactor-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		
+			<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<!--  live reload -->
+			<artifactId>spring-boot-devtools</artifactId>
+			<scope>runtime</scope>
+			<!-- this scope will not package it inside jar -->
+		</dependency>
 	</dependencies>
 
 	<build>
