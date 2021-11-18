@@ -21,7 +21,7 @@ public class EntityDtoUtil {
 	
 	public static  void setTransactionRequestDto(RequestContext requestContext) {
 		TransactionRequestDto dto = new TransactionRequestDto();
-		dto.setAmount(requestContext.getPurchaseOrderRequestDto().getUserId());
+		dto.setUserId(requestContext.getPurchaseOrderRequestDto().getUserId());
 		dto.setAmount(requestContext.getProductDto().getPrice());
 		requestContext.setTransactionRequestDto(dto);
 		//built object and store reference in request context
