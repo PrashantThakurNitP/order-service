@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import reactive.webflux.orderservice.dto.ProductDto;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 
@@ -31,6 +32,15 @@ public class ProductClient {
 		.retrieve()
 		.bodyToMono(ProductDto.class);// we are expecting response product dto
 		
+	}
+	
+	public Flux<ProductDto>getAllProducts(){
+		return this.webClient
+		
+				.get()
+				.uri("all")//we have exposed this url in product service
+				.retrieve()
+				.bodyToFlux(ProductDto.class);//since it is list of product
 	}
 
 
